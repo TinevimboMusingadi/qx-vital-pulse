@@ -5,3 +5,5 @@ joblib
 transformers
 torch
 pydantic
+scikit-learn
+python-dotenv
