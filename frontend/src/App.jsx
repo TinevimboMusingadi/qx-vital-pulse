@@ -18,6 +18,7 @@ function App() {
   const [audioBlob, setAudioBlob] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState(null);
+  const [metrics, setMetrics] = useState(null);
   const [error, setError] = useState(null);
 
   // In production, this should be the Render URL
@@ -40,6 +41,8 @@ function App() {
 
     setError(null);
     setIsLoading(true);
+    setMetrics(null);
+    const startTime = performance.now();
 
     try {
       const submitData = new FormData();
@@ -67,6 +70,11 @@ function App() {
       }
 
       setResult(data.prediction);
+      
+      const endTime = performance.now();
+      setMetrics({
+        latencyMs: Math.round(endTime - startTime)
+      });
     } catch (err) {
       console.error(err);
       setError(err.message || 'Failed to connect to the server. Is the API running?');
@@ -155,6 +163,14 @@ function App() {
               <span className="result-label">Active Weights</span>
               <span className="result-value" style={{ fontSize: '0.85rem' }}>{result.model_id}</span>
             </div>
+            {metrics && (
+              <div className="result-row">
+                <span className="result-label">API Latency</span>
+                <span className="result-value" style={{ fontSize: '0.85rem', color: 'var(--primary)' }}>
+                  {(metrics.latencyMs / 1000).toFixed(2)}s
+                </span>
+              </div>
+            )}
           </div>
         )}
       </main>
